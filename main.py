@@ -2,7 +2,7 @@ from parsing_engine import interface
 
 
 interface.scrap_main_page(
-    account="PiGYu14sXWlvQru",
+    account="Mask",
     save_dir="./saver/",
     headless=True,
     page_info="main",
@@ -12,7 +12,7 @@ interface.scrap_main_page(
 
 
 # interface.scrap_between_date(
-#     account="PiGYu14sXWlvQru",
+#     account="Mask",
 #     start_date="2021-4-1",
 #     end_date="2021-4-12",
 #     save_dir="./saver/",
