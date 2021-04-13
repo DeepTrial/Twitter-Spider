@@ -4,7 +4,10 @@ from parsing_engine import interface
 interface.scrap_main_page(
     account="PiGYu14sXWlvQru",
     save_dir="./saver/",
-    headless=True
+    headless=True,
+    page_info="main",
+    login=True,
+    resume=True
 )
 
 

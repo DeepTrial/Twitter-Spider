@@ -126,7 +126,6 @@ def get_single_tweet(card, lang="zh"):
 def get_page_tweets(driver,account,data,writer,tweet_ids,logger):
 
     page_cards = driver.find_elements_by_xpath('//div[@data-testid="tweet"]')
-    print(page_cards)
     for card in page_cards:
         sleep(random.uniform(1.5,2.8))
         tweet = get_single_tweet(card)

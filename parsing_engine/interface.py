@@ -20,7 +20,7 @@ def check_dir(dir):
     else:
         return True
 
-def login(driver,logger):
+def login_website(driver,logger):
     try:
         logger.info('Login twitter with cookies')
         login_cookie(driver,logger)
@@ -34,24 +34,42 @@ def login(driver,logger):
             exit()
     return driver
 
+def load_history(filename,logger):
+    history_set=set()
+    df_file=open(filename,'r',encoding='utf-8-sig')
+    history_df=pd.read_csv(df_file)
+    logger.info("Load history tweet...")
+    try:
+        for i in range(len(history_df)):
+            tweet_id = ''.join(history_df.iloc[i,0:3])+ history_df.iloc[i,-1]
+            history_set.add(tweet_id)
+    except:
+        df_file.close()
+        logger.exception("Load history tweet failed!")
+    return history_set
 
-
-def scrap_main_page(account,save_dir,headless=True,page_info="main",proxy=None,save_image=True,save_video=True):
+def scrap_main_page(account,save_dir,headless=True,page_info="main",login=False,resume=False,proxy=None,save_image=True,save_video=True):
 
     logger=get_logger()
     driver = init_driver(headless, proxy, show_images=save_image)
-    driver=login(driver,logger)
+    if login:
+        driver=login_website(driver,logger)
 
     current_date=datetime.date.today().isoformat()
-    csv_logfile_name=os.path.join(save_dir,account+"_"+current_date+".csv")
+    csv_logfile_name=os.path.join(save_dir,account+".csv")
     check_dir(save_dir)
 
     tweet_ids=set()
+    write_mode="w"
+    if resume:
+        tweet_ids=load_history(csv_logfile_name,logger)
+        write_mode="a"
     data=[]
-    with open(csv_logfile_name,'w',newline='',encoding='utf-8-sig') as f:
+    with open(csv_logfile_name,write_mode,newline='',encoding='utf-8-sig') as f:
         header = ['UserScreenName', 'UserName', 'Timestamp', 'Text', 'Emojis', 'Comments', 'Likes', 'Retweets','Image link', 'Video link', 'Tweet URL']
         writer = csv.writer(f)
-        writer.writerow(header)
+        if not resume:
+            writer.writerow(header)
 
         if page_info in ["main","with_replies","media","likes"]:
             open_user_page(driver,account,page_info)
@@ -79,11 +97,13 @@ def scrap_main_page(account,save_dir,headless=True,page_info="main",proxy=None,s
     driver.close()
 
 
-def scrap_between_date(account,start_date,end_date,save_dir,interval=3,headless=True,proxy=None,save_image=True,save_video=True):
+def scrap_between_date(account,start_date,end_date,save_dir,interval=3,headless=True,login=False,proxy=None,save_image=True,save_video=True):
 
     logger = get_logger()
     driver = init_driver(headless, proxy, show_images=save_image)
-    driver = login(driver, logger)
+
+    if login:
+        driver = login_website(driver, logger)
 
     start_date=datetime.date(int(start_date.split("-")[0]),int(start_date.split("-")[1]),int(start_date.split("-")[2]))
     end_date = datetime.date(int(end_date.split("-")[0]), int(end_date.split("-")[1]), int(end_date.split("-")[2]))
