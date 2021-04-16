@@ -1,14 +1,17 @@
+#! /usr/bin/env python3
+
+import csv
+import datetime
+import os
+import pandas as pd
+from time import sleep
+
 from parsing_engine.driver import *
 from parsing_engine.login.login_twitter import *
 from parsing_engine.engine import open_user_page,open_search_page,get_page_tweets
 from parsing_engine.media.image import download_images
 from parsing_engine.media.video import download_videos
 from parsing_engine.log import get_logger
-from time import sleep
-import os
-import datetime
-import csv
-import pandas as pd
 
 
 
@@ -48,7 +51,7 @@ def load_history(filename,logger):
         logger.exception("Load history tweet failed!")
     return history_set
 
-def scrap_main_page(account,save_dir,headless=True,page_info="main",login=False,resume=False,proxy=None,save_image=True,save_video=True):
+def scrap_main_page(account,save_dir,headless=False,page_info="main",login=False,resume=False,proxy=None,save_image=False,save_video=False):
 
     logger=get_logger()
     driver = init_driver(headless, proxy, show_images=save_image)
@@ -97,7 +100,7 @@ def scrap_main_page(account,save_dir,headless=True,page_info="main",login=False,
     driver.close()
 
 
-def scrap_between_date(account,start_date,end_date,save_dir,interval=3,headless=True,login=False,proxy=None,save_image=True,save_video=True):
+def scrap_between_date(account,start_date,end_date,save_dir,interval=3,headless=False,login=False,proxy=None,save_image=False,save_video=False,lang=None):
 
     logger = get_logger()
     driver = init_driver(headless, proxy, show_images=save_image)
@@ -126,7 +129,7 @@ def scrap_between_date(account,start_date,end_date,save_dir,interval=3,headless=
             max_date=start_date + datetime.timedelta(days=interval)
             max_date_str=max_date.__format__('%Y-%m-%d')
             start_date_str=start_date.__format__('%Y-%m-%d')
-            open_search_page(driver, account, None, start_date_str, max_date_str)
+            open_search_page(driver, account, None, start_date_str, max_date_str, lang=lang)
             sleep(5)
             keep_scrolling = True
             while keep_scrolling:

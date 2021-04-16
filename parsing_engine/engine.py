@@ -1,6 +1,8 @@
-from time import sleep
-import re
+#! /usr/bin/env python3
+
 import random
+import re
+from time import sleep
 
 def open_user_page(driver,account,page_info):
     if page_info=="main":
@@ -33,7 +35,7 @@ def open_search_page(driver,from_account,to_account,start_date_str,end_date_str,
 
 langs_video={"zh":"观看","en":"views"}
 
-def get_single_tweet(card, lang="zh"):
+def get_single_tweet(card, lang="en"):
     """Extract data from tweet card"""
     image_links = []
     video_url=""

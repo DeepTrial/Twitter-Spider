@@ -1,13 +1,14 @@
+#! /usr/bin/env python3
 
-import time
-from selenium.webdriver.support.wait import WebDriverWait
-import parsing_engine.login.username_password as const
+import json
+import os
+import parsing_engine.login.username_password as login_info
+from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
-import json
-from selenium.webdriver.common.by import By
+from selenium.webdriver.support.wait import WebDriverWait
 from time import sleep
-import os
+
 
 #login twitter with password
 def login_pwd(driver,logger):
@@ -15,8 +16,8 @@ def login_pwd(driver,logger):
     driver.get('https://www.twitter.com/login')
     # 输入账号密码
     sleep(15)
-    username = const.USERNAME
-    password = const.PASSWORD
+    username = login_info.USERNAME
+    password = login_info.PASSWORD
     #print(username,password)
     driver.get('https://www.twitter.com/login')
     username_xpath = '//input[@name="session[username_or_email]"]'
@@ -29,7 +30,7 @@ def login_pwd(driver,logger):
     password_el.send_keys(password)
     password_el.send_keys(Keys.RETURN)
     # 等待3秒
-    time.sleep(3)
+    sleep(3)
     # 生成登录后快照
     # 保存当前登录的cookie
     dictCookies = driver.get_cookies()

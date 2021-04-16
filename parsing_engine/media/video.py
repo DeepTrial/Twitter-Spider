@@ -1,9 +1,17 @@
+#! /usr/bin/env python3
+
 # author @f-rog github
 
-import sys, json, re, shutil, os.path, logging
-from datetime import datetime
-import requests
 from colorama import init, Fore, Style
+from datetime import datetime
+import json
+import logging
+import re
+import requests
+import shutil
+import sys
+import os.path
+
 init()
 
 
