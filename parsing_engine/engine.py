@@ -33,7 +33,7 @@ def open_search_page(driver,from_account,to_account,start_date_str,end_date_str,
     driver.get('https://twitter.com/search?q=' + words + from_account + to_account + hash_tags + end_date + start_date + lang + '&src=typed_query&f=liv')
 
 
-langs_video={"zh":"观看","en":"views"}
+langs_video={"zh":"次观看","en":"views"}
 
 def get_single_tweet(card, lang="en"):
     """Extract data from tweet card"""
