@@ -1,4 +1,5 @@
-runtime.log
-cookies.json
 .env
-./saver/
+cookies.json
+runtime.log
+.idea/
+saver/
