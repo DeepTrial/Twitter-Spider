@@ -127,7 +127,7 @@ def scrap_between_date(account,start_date,end_date,save_dir,headless=False,login
         max_date_str=end_date.__format__('%Y-%m-%d')
         start_date_str=start_date.__format__('%Y-%m-%d')
         open_search_page(driver, account, None, start_date_str, max_date_str, lang=lang)
-        sleep(5)
+        sleep(2)
         keep_scrolling = True
         while keep_scrolling:
             current_position = get_current_Y_offset(driver)
