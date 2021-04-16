@@ -44,7 +44,7 @@ def get_single_tweet(card, lang="en"):
         return
 
     try:
-        handle = card.find_element_by_xpath('.//span[contains(text(), "@")]').text
+        userID = card.find_element_by_xpath('.//span[contains(text(), "@")]').text
     except:
         return
 
@@ -121,7 +121,7 @@ def get_single_tweet(card, lang="en"):
     except:
         return
 
-    tweet = (username, handle, postdate, text, emojis, reply_cnt, retweet_cnt, like_cnt, image_links,video_url, tweet_url)
+    tweet = (username, userID, postdate, text, emojis, reply_cnt, retweet_cnt, like_cnt, image_links,video_url, tweet_url)
     return tweet
 
 def get_page_tweets(driver,account,data,writer,tweet_ids,logger):
@@ -131,7 +131,9 @@ def get_page_tweets(driver,account,data,writer,tweet_ids,logger):
         tweet = get_single_tweet(card)
         if tweet and tweet[1]=='@'+account:
             # check if the tweet is unique
-            tweet_id = ''.join(tweet[:3]) + tweet[-1]
+            # Each user has a unique ID, and cannot publish multiple tweets simultaneously
+            tweet_id = tweet[2] + tweet[1] # Timestamp+UserID
+            # Alternatively: tweet_id = tweet[-1] # URL
             if tweet_id not in tweet_ids:
                 tweet_ids.add(tweet_id)
                 data.append(tweet)
