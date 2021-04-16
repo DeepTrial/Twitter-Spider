@@ -1,4 +1,6 @@
-runtime.log
-cookies.json
 .env
-./saver/
+cookies.json
+runtime.log
+*__pycache__*
+.idea/
+saver/

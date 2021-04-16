@@ -1,7 +1,10 @@
+#! /usr/bin/env python3
+
 import chromedriver_autoinstaller
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
+
 
 
 def init_driver(headless=True, proxy=None, show_images=False):

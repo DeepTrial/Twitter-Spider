@@ -1,7 +1,10 @@
+#! /usr/bin/env python3
+
+from colorama import init, Fore, Style
 import os
 import requests
 import urllib
-from colorama import init, Fore, Style
+
 init()
 
 
