@@ -100,7 +100,7 @@ def scrap_main_page(account,save_dir,headless=False,page_info="main",login=False
     driver.close()
 
 
-def scrap_between_date(account,start_date,end_date,save_dir,interval=3,headless=False,login=False,proxy=None,save_image=False,save_video=False,lang=None):
+def scrap_between_date(account,start_date,end_date,save_dir,headless=False,login=False,proxy=None,save_image=False,save_video=False,lang=None):
 
     logger = get_logger()
     driver = init_driver(headless, proxy, show_images=save_image)
@@ -124,22 +124,18 @@ def scrap_between_date(account,start_date,end_date,save_dir,interval=3,headless=
         writer = csv.writer(f)
         writer.writerow(header)
 
-        while start_date <= end_date:
+        max_date_str=end_date.__format__('%Y-%m-%d')
+        start_date_str=start_date.__format__('%Y-%m-%d')
+        open_search_page(driver, account, None, start_date_str, max_date_str, lang=lang)
+        sleep(5)
+        keep_scrolling = True
+        while keep_scrolling:
+            current_position = get_current_Y_offset(driver)
+            driver, data, writer, tweet_ids= get_page_tweets(driver,account, data, writer, tweet_ids,logger)
+            driver = driver_scroling(driver, 700)
+            if get_current_Y_offset(driver) == current_position:
+                keep_scrolling = False
 
-            max_date=start_date + datetime.timedelta(days=interval)
-            max_date_str=max_date.__format__('%Y-%m-%d')
-            start_date_str=start_date.__format__('%Y-%m-%d')
-            open_search_page(driver, account, None, start_date_str, max_date_str, lang=lang)
-            sleep(5)
-            keep_scrolling = True
-            while keep_scrolling:
-                current_position = get_current_Y_offset(driver)
-                driver, data, writer, tweet_ids= get_page_tweets(driver,account, data, writer, tweet_ids,logger)
-                driver = driver_scroling(driver, 700)
-                if get_current_Y_offset(driver) == current_position:
-                    keep_scrolling = False
-
-            start_date=start_date + datetime.timedelta(days=interval)
 
     data = pd.DataFrame(data, columns=['UserScreenName', 'UserName', 'Timestamp', 'Text', 'Emojis', 'Comments', 'Likes','Retweets', 'Image link', 'Video link', 'Tweet URL'])
 

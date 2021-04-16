@@ -30,7 +30,7 @@ def open_search_page(driver,from_account,to_account,start_date_str,end_date_str,
     start_date = "since%3A" + start_date_str + "%20"
 
     # print('https://twitter.com/search?q=' + words + from_account + to_account + hash_tags + end_date + start_date + lang + '&src=typed_query' + display_type)
-    driver.get('https://twitter.com/search?q=' + words + from_account + to_account + hash_tags + end_date + start_date + lang + '&src=typed_query&f=liv')
+    driver.get('https://twitter.com/search?q=' + words + from_account + to_account + hash_tags + end_date + start_date + lang + '&src=typed_query&f=live')
 
 
 langs_video={"zh":"次观看","en":"views"}
@@ -129,7 +129,7 @@ def get_page_tweets(driver,account,data,writer,tweet_ids,logger):
 
     page_cards = driver.find_elements_by_xpath('//div[@data-testid="tweet"]')
     for card in page_cards:
-        sleep(random.uniform(1.5,2.8))
+        sleep(random.uniform(0.5,2.1))
         tweet = get_single_tweet(card)
         if tweet and tweet[1]=='@'+account:
             # check if the tweet is unique
