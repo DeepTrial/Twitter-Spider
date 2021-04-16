@@ -33,7 +33,7 @@ if args.mode == "main":
     interface.scrap_main_page(
         account=args.account,
         save_dir=args.savedir,
-        headless=args.pop,
+        headless=False if args.pop else True,
         page_info="main",
         login=True,
         resume=True,
@@ -46,7 +46,7 @@ elif args.mode == "date":
         start_date=args.begin,
         end_date=args.end,
         save_dir=args.savedir,
-        headless=args.pop,
+        headless=False if args.pop else True,
         save_image=args.image,
         save_video=args.video,
         lang=args.lang
