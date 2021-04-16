@@ -1,14 +1,13 @@
 #! /usr/bin/env python3
 
-import random
 import re
-from time import sleep
+
 
 def open_user_page(driver,account,page_info):
     if page_info=="main":
         page_info=""
     driver.get('https://twitter.com/' + account+"/"+page_info)
-    sleep(10)
+
 
 def open_search_page(driver,from_account,to_account,start_date_str,end_date_str,hashtag=None,words=None,lang=None):
     from_account = "(from%3A" + from_account + ")%20" if from_account is not None else ""
@@ -129,7 +128,6 @@ def get_page_tweets(driver,account,data,writer,tweet_ids,logger):
 
     page_cards = driver.find_elements_by_xpath('//div[@data-testid="tweet"]')
     for card in page_cards:
-        sleep(random.uniform(0.5,2.1))
         tweet = get_single_tweet(card)
         if tweet and tweet[1]=='@'+account:
             # check if the tweet is unique

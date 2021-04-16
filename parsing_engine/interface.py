@@ -4,6 +4,7 @@ import csv
 import datetime
 import os
 import pandas as pd
+import random
 from time import sleep
 
 from parsing_engine.driver import *
@@ -30,7 +31,7 @@ def login_website(driver,logger):
     except:
         logger.warning('Login twitter with cookies failed. Try to login with pwd')
         try:
-            sleep(3)
+            sleep(20)
             login_pwd(driver,logger)
         except:
             logger.exception("Login failed. Please check with headless=False.")
@@ -81,12 +82,12 @@ def scrap_main_page(account,save_dir,headless=False,page_info="main",login=False
             exit()
         keep_scrolling=True
         while keep_scrolling:
+            sleep(random.uniform(0.5,2.1))
             current_position = get_current_Y_offset(driver)
             driver, data, writer, tweet_ids= get_page_tweets(driver, account,data, writer, tweet_ids,logger)
             driver=driver_scroling(driver, 900)
             if get_current_Y_offset(driver)==current_position:
                 keep_scrolling=False
-        sleep(2)
     data = pd.DataFrame(data, columns=['UserScreenName', 'UserName', 'Timestamp', 'Text', 'Emojis', 'Comments', 'Likes','Retweets', 'Image link', 'Video link', 'Tweet URL'])
 
     # save_images
@@ -127,9 +128,9 @@ def scrap_between_date(account,start_date,end_date,save_dir,headless=False,login
         max_date_str=end_date.__format__('%Y-%m-%d')
         start_date_str=start_date.__format__('%Y-%m-%d')
         open_search_page(driver, account, None, start_date_str, max_date_str, lang=lang)
-        sleep(2)
         keep_scrolling = True
         while keep_scrolling:
+            sleep(random.uniform(0.5,2.1))
             current_position = get_current_Y_offset(driver)
             driver, data, writer, tweet_ids= get_page_tweets(driver,account, data, writer, tweet_ids,logger)
             driver = driver_scroling(driver, 700)
