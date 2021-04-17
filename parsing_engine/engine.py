@@ -1,14 +1,13 @@
 #! /usr/bin/env python3
 
-import random
 import re
-from time import sleep
+
 
 def open_user_page(driver,account,page_info):
     if page_info=="main":
         page_info=""
     driver.get('https://twitter.com/' + account+"/"+page_info)
-    sleep(10)
+
 
 def open_search_page(driver,from_account,to_account,start_date_str,end_date_str,hashtag=None,words=None,lang=None):
     from_account = "(from%3A" + from_account + ")%20" if from_account is not None else ""
@@ -30,7 +29,7 @@ def open_search_page(driver,from_account,to_account,start_date_str,end_date_str,
     start_date = "since%3A" + start_date_str + "%20"
 
     # print('https://twitter.com/search?q=' + words + from_account + to_account + hash_tags + end_date + start_date + lang + '&src=typed_query' + display_type)
-    driver.get('https://twitter.com/search?q=' + words + from_account + to_account + hash_tags + end_date + start_date + lang + '&src=typed_query&f=liv')
+    driver.get('https://twitter.com/search?q=' + words + from_account + to_account + hash_tags + end_date + start_date + lang + '&src=typed_query&f=live')
 
 
 langs_video={"zh":"次观看","en":"views"}
@@ -45,7 +44,7 @@ def get_single_tweet(card, lang="en"):
         return
 
     try:
-        handle = card.find_element_by_xpath('.//span[contains(text(), "@")]').text
+        userID = card.find_element_by_xpath('.//span[contains(text(), "@")]').text
     except:
         return
 
@@ -122,18 +121,19 @@ def get_single_tweet(card, lang="en"):
     except:
         return
 
-    tweet = (username, handle, postdate, text, emojis, reply_cnt, retweet_cnt, like_cnt, image_links,video_url, tweet_url)
+    tweet = (username, userID, postdate, text, emojis, reply_cnt, retweet_cnt, like_cnt, image_links,video_url, tweet_url)
     return tweet
 
 def get_page_tweets(driver,account,data,writer,tweet_ids,logger):
 
     page_cards = driver.find_elements_by_xpath('//div[@data-testid="tweet"]')
     for card in page_cards:
-        sleep(random.uniform(1.5,2.8))
         tweet = get_single_tweet(card)
         if tweet and tweet[1]=='@'+account:
             # check if the tweet is unique
-            tweet_id = ''.join(tweet[:3]) + tweet[-1]
+            # Each user has a unique ID, and cannot publish multiple tweets simultaneously
+            tweet_id = tweet[2] + tweet[1] # Timestamp+UserID
+            # Alternatively: tweet_id = tweet[-1] # URL
             if tweet_id not in tweet_ids:
                 tweet_ids.add(tweet_id)
                 data.append(tweet)
