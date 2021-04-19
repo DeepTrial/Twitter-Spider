@@ -24,4 +24,4 @@ T-Scraper uses only selenium to scrape data. Authentications is required in the 
 ## To-do Next:
 - bug fixed
 - add the func for downloading GIFs
-- i18n for downloading videos
+- proxy for downloading
