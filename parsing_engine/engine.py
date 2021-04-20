@@ -44,7 +44,8 @@ def get_single_tweet(card, lang="en"):
         return
 
     try:
-        userID = card.find_element_by_xpath('.//span[contains(text(), "@")]').text
+        #to prevent username contains @, we find all possible userid, the actual userid is the last one
+        userID = card.find_elements_by_xpath('.//span[contains(text(), "@")]')[-1].text
     except:
         return
 

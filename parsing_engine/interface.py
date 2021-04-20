@@ -35,21 +35,22 @@ def login_website(driver,logger):
             login_pwd(driver,logger)
         except:
             logger.exception("Login failed. Please check with headless=False.")
-            exit()
+            #exit()
     return driver
 
 def load_history(filename,logger):
     history_set=set()
-    df_file=open(filename,'r',encoding='utf-8-sig')
-    history_df=pd.read_csv(df_file)
+    # df_file=open(filename,'r',encoding='utf-8-sig')
+    # history_df=pd.read_csv(df_file)
     logger.info("Load history tweet...")
     try:
+        df_file = open(filename, 'r', encoding='utf-8-sig')
+        history_df = pd.read_csv(df_file)
         for i in range(len(history_df)):
-            tweet_id = ''.join(history_df.iloc[i,0:3])+ history_df.iloc[i,-1]
+            tweet_id = ''.join(history_df.iloc[i,2])+ history_df.iloc[i,1]
             history_set.add(tweet_id)
     except:
-        df_file.close()
-        logger.exception("Load history tweet failed!")
+        logger.warning("Load history tweet failed!")
     return history_set
 
 def scrap_main_page(account,save_dir,headless=False,page_info="main",login=False,resume=False,proxy=None,save_image=False,save_video=False):
@@ -62,7 +63,6 @@ def scrap_main_page(account,save_dir,headless=False,page_info="main",login=False
     current_date=datetime.date.today().isoformat()
     csv_logfile_name=os.path.join(save_dir,account+".csv")
     check_dir(save_dir)
-
     tweet_ids=set()
     write_mode="w"
     if resume:
@@ -77,17 +77,19 @@ def scrap_main_page(account,save_dir,headless=False,page_info="main",login=False
 
         if page_info in ["main","with_replies","media","likes"]:
             open_user_page(driver,account,page_info)
+            sleep(5)
         else:
             logger.exception("Page info error! Please check...")
             exit()
         keep_scrolling=True
         while keep_scrolling:
-            sleep(random.uniform(0.5,2.1))
+            sleep(random.uniform(0.5,1.1))
             current_position = get_current_Y_offset(driver)
             driver, data, writer, tweet_ids= get_page_tweets(driver, account,data, writer, tweet_ids,logger)
             driver=driver_scroling(driver, 900)
             if get_current_Y_offset(driver)==current_position:
                 keep_scrolling=False
+                logger.warning("End of the account")
     data = pd.DataFrame(data, columns=['UserScreenName', 'UserName', 'Timestamp', 'Text', 'Emojis', 'Comments', 'Likes','Retweets', 'Image link', 'Video link', 'Tweet URL'])
 
     # save_images
@@ -133,7 +135,7 @@ def scrap_between_date(account,start_date,end_date,save_dir,headless=False,login
             sleep(random.uniform(0.5,2.1))
             current_position = get_current_Y_offset(driver)
             driver, data, writer, tweet_ids= get_page_tweets(driver,account, data, writer, tweet_ids,logger)
-            driver = driver_scroling(driver, 700)
+            driver = driver_scroling(driver, 900)
             if get_current_Y_offset(driver) == current_position:
                 keep_scrolling = False
 
