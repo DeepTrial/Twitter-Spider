@@ -53,12 +53,16 @@ def load_history(filename,logger):
         logger.warning("Load history tweet failed!")
     return history_set
 
-def scrap_main_page(account,save_dir,headless=False,page_info="main",login=False,resume=False,proxy=None,save_image=False,save_video=False):
+def scrap_main_page(account,save_dir,headless=False,page_info="main",login=False,resume=False,proxy=None,save_image=False,save_video=False,continues=False,last_driver=None):
 
     logger=get_logger()
-    driver = init_driver(headless, proxy, show_images=save_image)
-    if login:
-        driver=login_website(driver,logger)
+    driver = None
+    if continues and last_driver:
+        driver = last_driver
+    else:
+        driver = init_driver(headless, proxy, show_images=save_image)
+        if login:
+            driver = login_website(driver, logger)
 
     current_date=datetime.date.today().isoformat()
     csv_logfile_name=os.path.join(save_dir,account+".csv")
@@ -100,16 +104,18 @@ def scrap_main_page(account,save_dir,headless=False,page_info="main",login=False
     if save_video:
         download_videos(data, save_dir, logger)
 
-    driver.close()
+    return driver
 
-
-def scrap_between_date(account,start_date,end_date,save_dir,headless=False,login=False,proxy=None,save_image=False,save_video=False,lang=None):
+def scrap_between_date(account,start_date,end_date,save_dir,headless=False,login=False,proxy=None,save_image=False,save_video=False,lang=None,continues=False,last_driver=None):
 
     logger = get_logger()
-    driver = init_driver(headless, proxy, show_images=save_image)
-
-    if login:
-        driver = login_website(driver, logger)
+    driver=None
+    if continues and last_driver:
+        driver = last_driver
+    else:
+        driver = init_driver(headless, proxy, show_images=save_image)
+        if login:
+            driver = login_website(driver, logger)
 
     start_date=datetime.date(int(start_date.split("-")[0]),int(start_date.split("-")[1]),int(start_date.split("-")[2]))
     end_date = datetime.date(int(end_date.split("-")[0]), int(end_date.split("-")[1]), int(end_date.split("-")[2]))
@@ -150,4 +156,4 @@ def scrap_between_date(account,start_date,end_date,save_dir,headless=False,login
     if save_video:
         download_videos(data, save_dir,logger)
 
-    driver.close()
+    return driver

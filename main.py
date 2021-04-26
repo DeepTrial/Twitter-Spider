@@ -20,9 +20,9 @@ parser.add_argument("-l", "--lang", default=None,help='Under "date" mode, filter
 
 args = parser.parse_args()
 
-def scrap(account):
+def scrap_base(account,continues=False,driver=None):
     if args.mode == "main":
-        interface.scrap_main_page(
+        driver=interface.scrap_main_page(
             account=account,
             save_dir=args.savedir,
             headless=False if args.pop else True,
@@ -30,10 +30,12 @@ def scrap(account):
             login=True,
             resume=args.resume,
             save_image=args.image,
-            save_video=args.video
+            save_video=args.video,
+            continues=continues,
+            last_driver=driver
         )
     elif args.mode == "date":
-        interface.scrap_between_date(
+        driver=interface.scrap_between_date(
             account=account,
             start_date=args.begin,
             end_date=args.end,
@@ -41,14 +43,33 @@ def scrap(account):
             headless=False if args.pop else True,
             save_image=args.image,
             save_video=args.video,
-            lang=args.lang
+            lang=args.lang,
+            continues=continues,
+            last_driver=driver
         )
+    return driver
+
+def scrap_one_account(account):
+    driver=scrap_base(account)
+    driver.close()
+
+def scrap_account_lists(account_list):
+    driver=None
+    for i in range(len(account_list)):
+        driver=scrap_base(account_list[i],continues=True,driver=driver)
+    driver.close()
+
+
 
 if args.accounts!=None:
+    cand_accounts=[]
     with open(file=args.accounts, mode="r", encoding="utf-8") as f:
         for line in f:
             account = line.split("twitter.com/")[-1].strip()
             if len(account)>1:
-                scrap(account)
+                cand_accounts.append(account)
+                #scrap(account)
+
+    scrap_account_lists(cand_accounts)
 else:
-    scrap(args.account)
+    scrap_one_account(args.account)
