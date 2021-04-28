@@ -8,6 +8,17 @@ def open_user_page(driver,account,page_info):
         page_info=""
     driver.get('https://twitter.com/' + account+"/"+page_info)
 
+def get_user_info(driver):
+    page_cards = driver.find_elements_by_xpath('//div[@data-testid="tweet"]')
+    if len(page_cards)>0:
+        card=page_cards[0]
+        try:
+            username = card.find_element_by_xpath('.//span').text
+            userID = card.find_elements_by_xpath('.//span[contains(text(), "@")]')[-1].text
+            return username, userID
+        except:
+            return None,None
+
 
 def open_search_page(driver,from_account,to_account,start_date_str,end_date_str,hashtag=None,words=None,lang=None):
     from_account = "(from%3A" + from_account + ")%20" if from_account is not None else ""
@@ -125,7 +136,9 @@ def get_single_tweet(card, lang="en"):
     tweet = (username, userID, postdate, text, emojis, reply_cnt, retweet_cnt, like_cnt, image_links,video_url, tweet_url)
     return tweet
 
-def get_page_tweets(driver,account,data,writer,tweet_ids,logger):
+def get_page_tweets(driver,account,data,writer,tweet_ids,logger,resume):
+    history_count=0
+    meet_history=False
 
     page_cards = driver.find_elements_by_xpath('//div[@data-testid="tweet"]')
     for card in page_cards:
@@ -136,9 +149,15 @@ def get_page_tweets(driver,account,data,writer,tweet_ids,logger):
             tweet_id = tweet[2] + tweet[1] # Timestamp+UserID
             # Alternatively: tweet_id = tweet[-1] # URL
             if tweet_id not in tweet_ids:
+                history_count=0
                 tweet_ids.add(tweet_id)
                 data.append(tweet)
                 writer.writerow(tweet)
                 logger.info("Found tweet made at "+str(tweet[2]))
-
-    return driver, data, writer, tweet_ids
+            else:
+                history_count+=1
+        if history_count>=5 and resume:  # if there are 5 continuous saved tweets
+            meet_history=True
+            logger.info("Find all new tweets!")
+            break
+    return meet_history,driver, data, writer, tweet_ids

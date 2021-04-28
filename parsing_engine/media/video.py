@@ -2,7 +2,6 @@
 
 # author @f-rog github
 
-from colorama import init, Fore, Style
 from datetime import datetime
 import json
 import logging
@@ -12,7 +11,6 @@ import shutil
 import sys
 import os.path
 
-init()
 
 
 class getVideo():
@@ -64,7 +62,7 @@ class getVideo():
                         hq_video_url = vid['url']
             self.url = hq_video_url
         except:
-            sys.exit('[' + Fore.RED + '+' + Style.RESET_ALL + ']' + ' No videos were found.')
+            print(' No videos were found.')
 
 
 def pretty_log(logdict):
@@ -76,8 +74,7 @@ def pretty_log(logdict):
         for k, v in logdict.items():
             logfile.write(
                 '-*-*-*-*- start of ' + k + '-*-*-*-*-\n' + str(v) + '\n-*-*-*-*- end of ' + k + '-*-*-*-*-\n')
-        print(
-            '[' + Fore.RED + '+' + Style.RESET_ALL + '] ' + 'Log saved at ./log/' + fn + '\nPlease submit a report with the content of said file.')
+        print('Log saved at ./log/' + fn + '\nPlease submit a report with the content of said file.')
 
 
 def save_file(url, ddir, filename):
@@ -98,7 +95,7 @@ def download(index,url,save_path):
         if (dl.url):
             save_file(dl.url, save_path, index)
         else:
-            print('[' + Fore.YELLOW + '+' + Style.RESET_ALL + '] ' + 'Theres an internal error, hang on...')
+            print( 'Theres an internal error, hang on...')
             pretty_log(dl.log)
 
     except Exception as e:

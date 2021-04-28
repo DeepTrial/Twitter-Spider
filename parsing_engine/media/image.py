@@ -1,11 +1,8 @@
 #! /usr/bin/env python3
 
-from colorama import init, Fore, Style
 import os
 import requests
 import urllib
-
-init()
 
 
 def download_images(data_frame, save_dir,logger):

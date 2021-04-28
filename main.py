@@ -21,6 +21,9 @@ parser.add_argument("-l", "--lang", default=None,help='Under "date" mode, filter
 args = parser.parse_args()
 
 def scrap_base(account,continues=False,driver=None):
+    '''
+    base function of scrap tweets. According to the parameter, choose the related solution.
+    '''
     if args.mode == "main":
         driver=interface.scrap_main_page(
             account=account,
