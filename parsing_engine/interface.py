@@ -10,7 +10,7 @@ from time import sleep
 from parsing_engine.driver import *
 from parsing_engine.login.login_twitter import *
 from parsing_engine.engine import open_user_page,open_search_page,get_page_tweets,get_user_info
-from parsing_engine.media.image import download_images
+from parsing_engine.media.image import download_images,download_images_multithread
 from parsing_engine.media.video import download_videos
 from parsing_engine.log import get_logger
 
@@ -83,6 +83,8 @@ def scrap_main_page(account,save_dir,headless=False,page_info="main",login=False
         if history_tweet_ids==tweet_ids:
             resume=False
             logger.info("Account: "+account+" has no history file!")
+        else:
+            tweet_ids=history_tweet_ids
         if resume:
             write_mode = "a"
 
@@ -125,7 +127,8 @@ def scrap_main_page(account,save_dir,headless=False,page_info="main",login=False
 
     # save_images
     if save_image:
-        download_images(data, save_dir, logger)
+        download_images_multithread(data, save_dir, logger)
+        #download_images(data, save_dir, logger)
 
     # save_videos
     if save_video:
