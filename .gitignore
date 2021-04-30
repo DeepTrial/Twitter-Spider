@@ -6,3 +6,4 @@ runtime.log
 *__pycache__*
 .idea/
 saver/
+.DS_Store
