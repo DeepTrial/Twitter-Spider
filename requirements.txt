@@ -1,6 +1,5 @@
 requests
 m3u8
-colorama
 selenium
 pandas
 python-dotenv

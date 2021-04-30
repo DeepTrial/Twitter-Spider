@@ -30,15 +30,15 @@ def check_dir(dir):
 def login_website(driver,logger):
     try:
         logger.info('Login twitter with cookies')
-        login_cookie(driver,logger)
+        login_cookie(driver)
     except:
         logger.warning('Login twitter with cookies failed. Try to login with pwd')
         try:
-            sleep(20)
-            login_pwd(driver,logger)
+            sleep(5)
+            login_pwd(driver)
         except:
-            logger.exception("Login failed. Please check with headless=False.")
-            #exit()
+            logger.exception("Login failed. Please check with headless=False. \n For the first time of login, you need to create an '.env' file and save your username and password in it! \n Please read the ReadMe carefully!")
+            exit()
     return driver
 
 def load_history(filename,logger):
@@ -99,12 +99,14 @@ def scrap_main_page(account,save_dir,headless=False,page_info="main",login=False
 
         if page_info in ["main","with_replies","media","likes"]:  #check if the page_info is in this 4 possible choice
             open_user_page(driver,account,page_info)   # open the selected page
-            sleep(5)
+            sleep(15)
         else:
             logger.exception("Page info error! Please check...")
             exit()
+
+
         try:
-            user_name,user_id=get_user_info(driver)
+            user_name, user_id = get_user_info(driver)
             logger.info("Scraping Twitter User: "+user_name+" ID: "+user_id)
         except:
             logger.info("Scraping Twitter Account:"+account)

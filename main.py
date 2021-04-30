@@ -3,7 +3,7 @@
 import argparse
 
 from parsing_engine import interface
-
+from parsing_engine.login.login_twitter import login_pwd
 
 parser = argparse.ArgumentParser(description='T-Scraper: A Twitter scraper that overrides some limits of official Twitter API')
 parser.add_argument("-as", "--accounts", default=None,help='A file with each line a user ID or link to their main page.')
@@ -17,7 +17,7 @@ parser.add_argument("-r","--resume",default=0,type=int,help='whether to resume t
 parser.add_argument("-b", "--begin", default="2021-1-1",help='Under "date" mode, the begin date of search. Default to be Jan 1, 2021.')
 parser.add_argument("-e", "--end", default="2021-1-10",help='Under "date" mode, the end date of search. Default to be Jan 10, 2021.')
 parser.add_argument("-l", "--lang", default=None,help='Under "date" mode, filter the language you want. "en" for English, "es" for Spanish, "fr" for French, "zh" for Chinese, no filter for all languages (default).')
-
+parser.add_argument("-fst", "--first", default=0,type=int,help='If it is the first time to login your account')
 args = parser.parse_args()
 
 def scrap_base(account,continues=False,driver=None):
@@ -60,6 +60,12 @@ def scrap_account_lists(account_list):
     driver=None
     for i in range(len(account_list)):
         driver=scrap_base(account_list[i],continues=True,driver=driver)
+    driver.close()
+
+
+if args.first:
+    driver=None
+    driver=login_pwd(driver,True)
     driver.close()
 
 

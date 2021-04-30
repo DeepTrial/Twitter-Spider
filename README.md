@@ -21,8 +21,8 @@ T-Scraper uses only selenium to scrape data. Authentications is required in the 
 
 For the first time, you need to create a `.env` file in the same level directory of the main.py, and save your login information in this file:
 ```
-USERNAME=your_user_name
-PASSWORD=your_password
+TWITTER_USERNAME=your_user_name_or_email
+TWITTER_PASSWORD=your_password
 ```
 In addition, I highly recommand to set the -p 1(headless=False) for the first time of login to make sure you really login successfully.
 
