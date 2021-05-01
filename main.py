@@ -9,7 +9,7 @@ parser = argparse.ArgumentParser(description='T-Scraper: A Twitter scraper that 
 parser.add_argument("-as", "--accounts", default=None,help='A file with each line a user ID or link to their main page.')
 parser.add_argument("-a", "--account", default="POTUS",help='Ignored if "-as" provided. Single account that you want, default is "POTUS". DO NOT enter the @ mark.')
 parser.add_argument("-i", "--image", default=0, type=int,help='Whether to save images. 0 for no (default), non-zero int for yes.')
-parser.add_argument("-m", "--mode", default="main",help='Choose mode: "main" (default) for whatever tweets on main page; "date" for a specified range')
+parser.add_argument("-m", "--mode", default="main",help='Choose mode: "main" (default) for whatever tweets on main page; "media" for only images and videos on main page; "date" for a specified range')
 parser.add_argument("-p", "--pop", default=0, type=int,help='Whether to show pop-up browser window. 0 for no (default), non-zero int for yes.')
 parser.add_argument("-sd", "--savedir", default="./saver/",help='The directory for saving the outputs. Default to be ./saver/')
 parser.add_argument("-v", "--video", default=0, type=int,help='Whether to save videos. 0 for no (default), non-zero int for yes.')
@@ -24,12 +24,12 @@ def scrap_base(account,continues=False,driver=None):
     '''
     base function of scrap tweets. According to the parameter, choose the related solution.
     '''
-    if args.mode == "main":
+    if args.mode != "date":
         driver=interface.scrap_main_page(
             account=account,
             save_dir=args.savedir,
             headless=False if args.pop else True,
-            page_info="main",
+            page_info=args.mode,
             login=True,
             resume=args.resume,
             save_image=args.image,
