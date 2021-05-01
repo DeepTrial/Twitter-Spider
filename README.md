@@ -24,7 +24,7 @@ For the first time, you need to create a `.env` file in the same level directory
 TWITTER_USERNAME=your_user_name_or_email
 TWITTER_PASSWORD=your_password
 ```
-In addition, I highly recommand to set the -p 1(headless=False) for the first time of login to make sure you really login successfully.
+In addition, I highly recommand to set the -fst 1(it will pop the webdriver) for the first time of login to make sure you really login successfully.
 
 **For more information about installation and usage, Please refer to the /doc/ dir**
 
