@@ -49,10 +49,11 @@ def download_func(image_resource):
 
     return 0
 
-def download_images_multithread(data_frame, save_dir,logger):
+def download_images_multithread(data_frame, save_dir,logger,thread_num=4,username=None):
     image_resource=[]
     for i, url_v in enumerate(data_frame["Image link"]):
-        username = data_frame['UserName'].iloc[0]
+        if not username:
+            username = data_frame['UserName'].iloc[0]
         if not username:
             username=data_frame['UserScreenName'].iloc[0]
         if not os.path.exists(save_dir + "/" + username):
@@ -60,7 +61,7 @@ def download_images_multithread(data_frame, save_dir,logger):
         dst_dir = os.path.join(save_dir, username)
 
         for j, url in enumerate(url_v):
-            if ("video" in url ) or ("profile" in url):
+            if ("video" in url) or ("profile" in url):
                 continue
             data_time=data_frame['Timestamp'].iloc[i]
             data_time=data_time.split("T")[0]
@@ -70,15 +71,10 @@ def download_images_multithread(data_frame, save_dir,logger):
 
             image_resource.append((image_url,image_filepath))
 
-    # num_cores = int(mp.cpu_count())
-    # logger.info("There are: " + str(num_cores) + " cores in this pc.")
-    # pool = mp.Pool(4)
-    #
-    # param_dict = {'task1': image_resource[:len(image_resource)//4],
-    #               'task2': image_resource[len(image_resource)//4:len(image_resource)//2],
-    #               'task3': image_resource[len(image_resource)//2:len(image_resource)//4*3],
-    #               'task4': image_resource[len(image_resource)//4*3:]}
-    th_lst=[[image_resource[:len(image_resource)//4]],[image_resource[len(image_resource)//4:len(image_resource)//2]],[image_resource[len(image_resource)//2:len(image_resource)//4*3]],[image_resource[len(image_resource)//4*3:]]]
+    th_lst=[]
+    for i in range(thread_num):
+        th_lst.append([image_resource[i//thread_num*len(image_resource):(i+1)//thread_num*len(image_resource)]])
+    #th_lst=[[image_resource[:len(image_resource)//4]],[image_resource[len(image_resource)//4:len(image_resource)//2]],[image_resource[len(image_resource)//2:len(image_resource)//4*3]],[image_resource[len(image_resource)//4*3:]]]
     for lst in th_lst:
         threading.Thread(target=download_func, args=(lst)).start()
 

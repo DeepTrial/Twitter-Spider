@@ -106,9 +106,10 @@ def download(index,url,save_path):
     del dl
 
 
-def download_videos(data_frame,save_dir,logger):
+def download_videos(data_frame,save_dir,logger,username=None):
     try:
-        username = data_frame['UserName'].iloc[0]
+        if not username:
+            username = data_frame['UserName'].iloc[0]
         if not os.path.exists(save_dir + "/" + username):
             os.makedirs(save_dir + "/" + username)
         save_dir = os.path.join(save_dir, username)

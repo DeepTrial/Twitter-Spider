@@ -116,10 +116,10 @@ def scrap_main_page(account,save_dir,headless=False,page_info="main",login=False
             sleep(random.uniform(0.5,1.1))
             current_position = get_current_Y_offset(driver)   # get current position
             ## main func of scraping the tweets
-            meet_history,driver, data, writer, tweet_ids= get_page_tweets(driver, account,data, writer, tweet_ids,logger,resume)
+            meet_history,driver, data, writer, tweet_ids= get_page_tweets(driver, account,data, writer, tweet_ids,logger,resume,page_info)
 
             # scroll 900 pixels
-            driver=driver_scroling(driver, 900)
+            driver=driver_scroling(driver, 950)
             if get_current_Y_offset(driver)==current_position:  #if already touch the end of the page
                 keep_scrolling=False
                 #logger.warning("End of the account")
@@ -129,12 +129,18 @@ def scrap_main_page(account,save_dir,headless=False,page_info="main",login=False
 
     # save_images
     if save_image:
-        download_images_multithread(data, save_dir, logger)
+        if page_info=="likes":
+            download_images_multithread(data, save_dir, logger,account)
+        else:
+            download_images_multithread(data, save_dir, logger)
         #download_images(data, save_dir, logger)
 
     # save_videos
     if save_video:
-        download_videos(data, save_dir, logger)
+        if page_info == "likes":
+            download_videos(data, save_dir, logger,account)
+        else:
+            download_videos(data, save_dir, logger)
 
     return driver
 
@@ -187,7 +193,7 @@ def scrap_between_date(account,start_date,end_date,save_dir,headless=False,login
             sleep(random.uniform(0.5, 1.1))
             current_position = get_current_Y_offset(driver)  # get current position
             ## main func of scraping the tweets
-            meet_history, driver, data, writer, tweet_ids = get_page_tweets(driver, account, data, writer, tweet_ids,logger,resume)
+            meet_history, driver, data, writer, tweet_ids = get_page_tweets(driver, account, data, writer, tweet_ids,logger,False,"main")
 
             # scroll 900 pixels
             driver = driver_scroling(driver, 900)

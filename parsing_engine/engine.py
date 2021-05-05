@@ -136,14 +136,14 @@ def get_single_tweet(card, lang="en"):
     tweet = (username, userID, postdate, text, emojis, reply_cnt, retweet_cnt, like_cnt, image_links,video_url, tweet_url)
     return tweet
 
-def get_page_tweets(driver,account,data,writer,tweet_ids,logger,resume):
+def get_page_tweets(driver,account,data,writer,tweet_ids,logger,resume,page_info):
     history_count=0
     meet_history=False
 
     page_cards = driver.find_elements_by_xpath('//div[@data-testid="tweet"]')
     for card in page_cards:
         tweet = get_single_tweet(card)
-        if tweet and tweet[1]=='@'+account:
+        if tweet and ((page_info!="likes" and tweet[1]=='@'+account) or page_info=="likes"):
             # check if the tweet is unique
             # Each user has a unique ID, and cannot publish multiple tweets simultaneously
             tweet_id = tweet[2] + tweet[1] # Timestamp+UserID
