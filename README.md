@@ -1,4 +1,4 @@
-# T-Scraper: A twitter scraper for python 
+# Twitter-Scraper: A twitter scraper for python 
 
 compared with other twitter scrapers, T-Scraper is more:
 - simple
