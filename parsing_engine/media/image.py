@@ -72,9 +72,15 @@ def download_images_multithread(data_frame, save_dir,logger,thread_num=4,usernam
             image_resource.append((image_url,image_filepath))
 
     th_lst=[]
+    threads = []
     for i in range(thread_num):
-        th_lst.append([image_resource[i//thread_num*len(image_resource):(i+1)//thread_num*len(image_resource)]])
+        th_lst.append([image_resource[len(image_resource)*i//thread_num:len(image_resource)*(i+1)//thread_num]])
+
     #th_lst=[[image_resource[:len(image_resource)//4]],[image_resource[len(image_resource)//4:len(image_resource)//2]],[image_resource[len(image_resource)//2:len(image_resource)//4*3]],[image_resource[len(image_resource)//4*3:]]]
     for lst in th_lst:
-        threading.Thread(target=download_func, args=(lst)).start()
+        t=threading.Thread(target=download_func, args=(lst))
+        threads.append(t)
+        t.start()
 
+    for t in threads:
+        t.join()

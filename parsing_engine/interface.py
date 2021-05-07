@@ -107,6 +107,8 @@ def scrap_main_page(account,save_dir,headless=False,page_info="main",login=False
 
         try:
             user_name, user_id = get_user_info(driver)
+            if "\n" in user_name:
+                user_name="".join(user_name.split("\n"))
             logger.info("Scraping Twitter User: "+user_name+" ID: "+user_id)
         except:
             logger.info("Scraping Twitter Account:"+account)
@@ -119,7 +121,7 @@ def scrap_main_page(account,save_dir,headless=False,page_info="main",login=False
             meet_history,driver, data, writer, tweet_ids= get_page_tweets(driver, account,data, writer, tweet_ids,logger,resume,page_info)
 
             # scroll 900 pixels
-            driver=driver_scroling(driver, 950)
+            driver=driver_scroling(driver, 900)
             if get_current_Y_offset(driver)==current_position:  #if already touch the end of the page
                 keep_scrolling=False
                 #logger.warning("End of the account")
@@ -130,9 +132,9 @@ def scrap_main_page(account,save_dir,headless=False,page_info="main",login=False
     # save_images
     if save_image:
         if page_info=="likes":
-            download_images_multithread(data, save_dir, logger,account)
+            download_images_multithread(data, save_dir, logger,4,account)
         else:
-            download_images_multithread(data, save_dir, logger)
+            download_images_multithread(data, save_dir, logger,thread_num=8)
         #download_images(data, save_dir, logger)
 
     # save_videos

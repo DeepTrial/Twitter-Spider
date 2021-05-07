@@ -156,7 +156,7 @@ def get_page_tweets(driver,account,data,writer,tweet_ids,logger,resume,page_info
                 logger.info("Found tweet made at "+str(tweet[2]))
             else:
                 history_count+=1
-        if history_count>=5 and resume:  # if there are 5 continuous saved tweets
+        if history_count>=10 and resume:  # if there are 5 continuous saved tweets
             meet_history=True
             logger.info("Find all new tweets!")
             break
