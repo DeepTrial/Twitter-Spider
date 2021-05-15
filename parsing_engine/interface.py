@@ -11,7 +11,7 @@ from parsing_engine.driver import *
 from parsing_engine.login.login_twitter import *
 from parsing_engine.engine import open_user_page,open_search_page,get_page_tweets,get_user_info
 from parsing_engine.media.image import download_images,download_images_multithread
-from parsing_engine.media.video import download_videos
+from parsing_engine.media.video import download_videos,download_videos_multithread
 from parsing_engine.log import get_logger
 
 
@@ -142,7 +142,8 @@ def scrap_main_page(account,save_dir,headless=False,page_info="main",login=False
         if page_info == "likes":
             download_videos(data, save_dir, logger,account)
         else:
-            download_videos(data, save_dir, logger)
+            download_videos_multithread(data,save_dir,logger,thread_num=8)
+            #download_videos(data, save_dir, logger)
 
     return driver
 

@@ -10,8 +10,8 @@ import requests
 import shutil
 import sys
 import os.path
-
-
+import threading
+import youtube_dl
 
 class getVideo():
     def __init__(self, video_url):
@@ -105,6 +105,20 @@ def download(index,url,save_path):
 
     del dl
 
+def youtube_downloader(target, url):
+    try:
+        download_path = target
+        ydl_opts = {
+            "outtmpl": download_path,
+            "quiet": True,
+            "logger": None,
+            "ignoreerrors:": True
+        }
+        with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+            ydl.download([url, ])
+    except Exception as y:
+        print("Video at: " + url + " download failed.")
+
 
 def download_videos(data_frame,save_dir,logger,username=None):
     try:
@@ -122,10 +136,62 @@ def download_videos(data_frame,save_dir,logger,username=None):
         try:
             data_time = data_frame['Timestamp'].iloc[i]
             data_time = data_time.split("T")[0]
-            download(index=data_time+"-"+str(i),url=url_video,save_path=save_dir)
+            youtube_downloader(os.path.join(save_dir,data_time+"-"+str(i)+".mp4"),url_video)
+            #download(index=data_time+"-"+str(i),url=url_video,save_path=save_dir)
         except:
             logger.warning("Video at: " + url_video + " download failed.")
             #print('\r[' + Fore.YELLOW + 'WARNING' + Style.RESET_ALL + '] ' +  url_video + " video download failed")
+
+def download_func(videos_resource):
+    for (video_url,video_filepath) in videos_resource:
+        try:
+            ydl_opts = {
+                "outtmpl": video_filepath,
+                "quiet": True,
+                "logger": None,
+                "ignoreerrors:": True
+            }
+            with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+                ydl.download([video_url, ])
+        except:
+            print("Video at: " + video_url + " download failed.")
+
+    return 0
+
+def download_videos_multithread(data_frame, save_dir,logger,thread_num=4,username=None):
+    videos_resource=[]
+    for i, url_v in enumerate(data_frame["Video link"]):
+        if not username:
+            username = data_frame['UserName'].iloc[0]
+        if not username:
+            username=data_frame['UserScreenName'].iloc[0]
+        if not os.path.exists(save_dir + "/" + username):
+            os.makedirs(save_dir + "/" + username)
+        dst_dir = os.path.join(save_dir, username)
+
+        if len(url_v)==0:
+            continue
+
+        data_time=data_frame['Timestamp'].iloc[i]
+        data_time=data_time.split("T")[0]
+
+        video_filepath=os.path.join(dst_dir,data_time+"-"+str(i)+".mp4")
+
+        videos_resource.append((url_v,video_filepath))
+
+    th_lst=[]
+    threads = []
+    for i in range(thread_num):
+        th_lst.append([videos_resource[len(videos_resource)*i//thread_num:len(videos_resource)*(i+1)//thread_num]])
+
+    #th_lst=[[image_resource[:len(image_resource)//4]],[image_resource[len(image_resource)//4:len(image_resource)//2]],[image_resource[len(image_resource)//2:len(image_resource)//4*3]],[image_resource[len(image_resource)//4*3:]]]
+    for lst in th_lst:
+        t=threading.Thread(target=download_func, args=(lst))
+        threads.append(t)
+        t.start()
+
+    for t in threads:
+        t.join()
 
 # if __name__=="__main__":
 #     download("2019-05-09","https://twitter.com/maou_0618/status/1126503764918063107","./media/")
