@@ -136,10 +136,9 @@ def get_single_tweet(card, lang="en"):
     tweet = (username, userID, postdate, text, emojis, reply_cnt, retweet_cnt, like_cnt, image_links,video_url, tweet_url)
     return tweet
 
-def get_page_tweets(driver,account,data,writer,tweet_ids,logger,resume,page_info):
-    history_count=0
+def get_page_tweets(driver,account,data,writer,tweet_ids,logger,resume,page_info,history_count):
+    
     meet_history=False
-
     page_cards = driver.find_elements_by_xpath('//div[@data-testid="tweet"]')
     for card in page_cards:
         tweet = get_single_tweet(card)
@@ -156,8 +155,9 @@ def get_page_tweets(driver,account,data,writer,tweet_ids,logger,resume,page_info
                 logger.info("Found tweet made at "+str(tweet[2]))
             else:
                 history_count+=1
+
         if history_count>=10 and resume:  # if there are 5 continuous saved tweets
             meet_history=True
             logger.info("Find all new tweets!")
             break
-    return meet_history,driver, data, writer, tweet_ids
+    return meet_history,history_count,driver, data, writer, tweet_ids

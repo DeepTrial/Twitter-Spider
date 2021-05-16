@@ -91,6 +91,7 @@ def scrap_main_page(account,save_dir,headless=False,page_info="main",login=False
     ##############################################################
 
     data=[]
+    history_count=0
     with open(csv_logfile_name,write_mode,newline='',encoding='utf-8-sig') as f:
         header = ['UserScreenName', 'UserName', 'Timestamp', 'Text', 'Emojis', 'Comments', 'Likes', 'Retweets','Image link', 'Video link', 'Tweet URL']
         writer = csv.writer(f)
@@ -118,7 +119,7 @@ def scrap_main_page(account,save_dir,headless=False,page_info="main",login=False
             sleep(random.uniform(0.5,1.1))
             current_position = get_current_Y_offset(driver)   # get current position
             ## main func of scraping the tweets
-            meet_history,driver, data, writer, tweet_ids= get_page_tweets(driver, account,data, writer, tweet_ids,logger,resume,page_info)
+            meet_history,history_count,driver, data, writer, tweet_ids= get_page_tweets(driver, account,data, writer, tweet_ids,logger,resume,page_info,history_count)
 
             # scroll 900 pixels
             driver=driver_scroling(driver, 900)
@@ -172,6 +173,7 @@ def scrap_between_date(account,start_date,end_date,save_dir,headless=False,login
 
     tweet_ids = set()
     data = []
+    history_count=0
 
     try:
         open_user_page(driver,account,"main")
@@ -195,7 +197,7 @@ def scrap_between_date(account,start_date,end_date,save_dir,headless=False,login
             sleep(random.uniform(0.5, 1.1))
             current_position = get_current_Y_offset(driver)  # get current position
             ## main func of scraping the tweets
-            meet_history, driver, data, writer, tweet_ids = get_page_tweets(driver, account, data, writer, tweet_ids,logger,False,"main")
+            meet_history,history_count, driver, data, writer, tweet_ids = get_page_tweets(driver, account, data, writer, tweet_ids,logger,False,"main",history_count)
 
             # scroll 900 pixels
             driver = driver_scroling(driver, 900)
