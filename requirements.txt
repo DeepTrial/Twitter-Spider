@@ -6,3 +6,4 @@ python-dotenv
 chromedriver-autoinstaller
 urllib3
 unicodecsv
+youtube_dl
