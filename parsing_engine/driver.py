@@ -2,9 +2,8 @@
 
 import chromedriver_autoinstaller
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.support.wait import WebDriverWait
 from selenium import webdriver
-
+from selenium.webdriver.chrome.service import Service
 
 
 def init_driver(headless=True, proxy=None, show_images=False):
@@ -24,7 +23,8 @@ def init_driver(headless=True, proxy=None, show_images=False):
     if show_images == False:
         prefs = {"profile.managed_default_content_settings.images": 2}
         options.add_experimental_option("prefs", prefs)
-    driver = webdriver.Chrome(options=options,executable_path=chromedriver_path)
+    chrome_driver_path_obj = Service(chromedriver_path)
+    driver = webdriver.Chrome(options = options, service = chrome_driver_path_obj)
     driver.set_page_load_timeout(100)
     return driver
 

@@ -11,7 +11,7 @@ import shutil
 import sys
 import os.path
 import threading
-import youtube_dl
+import yt_dlp
 
 class getVideo():
     def __init__(self, video_url):
@@ -112,9 +112,10 @@ def youtube_downloader(target, url):
             "outtmpl": download_path,
             "quiet": True,
             "logger": None,
-            "ignoreerrors:": True
+            "ignoreerrors:": True,
+            'cookiefile': './cookies'
         }
-        with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             ydl.download([url, ])
     except Exception as y:
         print("Video at: " + url + " download failed.")
@@ -149,9 +150,10 @@ def download_func(videos_resource):
                 "outtmpl": video_filepath,
                 "quiet": True,
                 "logger": None,
-                "ignoreerrors:": True
+                "ignoreerrors:": True,
+                'cookiefile': './cookies'
             }
-            with youtube_dl.YoutubeDL(ydl_opts) as ydl:
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 ydl.download([video_url, ])
         except:
             print("Video at: " + video_url + " download failed.")

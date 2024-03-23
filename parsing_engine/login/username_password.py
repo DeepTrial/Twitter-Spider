@@ -16,6 +16,6 @@ def load_env_variable(key, default_value=None, none_allowed=False):
         raise RuntimeError(f"{key} returned {v} but this is not allowed!")
     return v
 
-
+EMAIL = load_env_variable("TWITTER_EMAIL", none_allowed=True)
 USERNAME = load_env_variable("TWITTER_USERNAME", none_allowed=True)
 PASSWORD = load_env_variable("TWITTER_PASSWORD", none_allowed=True)

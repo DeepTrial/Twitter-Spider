@@ -1,6 +1,7 @@
 #! /usr/bin/env python3
 
 import re
+from selenium.webdriver.common.by import By 
 
 
 def open_user_page(driver,account,page_info):
@@ -9,12 +10,12 @@ def open_user_page(driver,account,page_info):
     driver.get('https://twitter.com/' + account+"/"+page_info)
 
 def get_user_info(driver):
-    page_cards = driver.find_elements_by_xpath('//div[@data-testid="tweet"]')
+    page_cards = driver.find_elements(By.XPATH, '//div[@data-testid="tweet"]')
     if len(page_cards)>0:
         card=page_cards[0]
         try:
-            username = card.find_element_by_xpath('.//span').text
-            userID = card.find_elements_by_xpath('.//span[contains(text(), "@")]')[-1].text
+            username = card.find_element(By.XPATH, './/span').text
+            userID = card.find_elements(By.XPATH, './/span[contains(text(), "@")]')[-1].text
             return username, userID
         except:
             return None,None
@@ -50,50 +51,50 @@ def get_single_tweet(card, lang="en"):
     image_links = []
     video_url=""
     try:
-        username = card.find_element_by_xpath('.//span').text
+        username = card.find_element(By.XPATH, './/span').text
     except:
         return
 
     try:
         #to prevent username contains @, we find all possible userid, the actual userid is the last one
-        userID = card.find_elements_by_xpath('.//span[contains(text(), "@")]')[-1].text
+        userID = card.find_elements(By.XPATH, './/span[contains(text(), "@")]')[-1].text
     except:
         return
 
     try:
-        postdate = card.find_element_by_xpath('.//time').get_attribute('datetime')
+        postdate = card.find_element(By.XPATH, './/time').get_attribute('datetime')
     except:
         return
 
     try:
-        comment = card.find_element_by_xpath('.//div[2]/div[2]/div[1]').text
+        comment = card.find_element(By.XPATH, './/div[2]/div[2]/div[1]').text
     except:
         comment = ""
 
     try:
-        responding = card.find_element_by_xpath('.//div[2]/div[2]/div[2]').text
+        responding = card.find_element(By.XPATH, './/div[2]/div[2]/div[2]').text
     except:
         responding = ""
 
     text = comment + responding
 
     try:
-        reply_cnt = card.find_element_by_xpath('.//div[@data-testid="reply"]').text
+        reply_cnt = card.find_element(By.XPATH, './/div[@data-testid="reply"]').text
     except:
         reply_cnt = 0
 
     try:
-        retweet_cnt = card.find_element_by_xpath('.//div[@data-testid="retweet"]').text
+        retweet_cnt = card.find_element(By.XPATH, './/div[@data-testid="retweet"]').text
     except:
         retweet_cnt = 0
 
     try:
-        like_cnt = card.find_element_by_xpath('.//div[@data-testid="like"]').text
+        like_cnt = card.find_element(By.XPATH, './/div[@data-testid="like"]').text
     except:
         like_cnt = 0
 
     try:
-        elements = card.find_elements_by_xpath('.//div[2]/div[2]//img[contains(@src, "https://pbs.twimg.com/")]')
+        elements = card.find_elements(By.XPATH, './/div[2]/div[2]//img[contains(@src, "https://pbs.twimg.com/")]')
         for element in elements:
             image_links.append(element.get_attribute('src'))
     except:
@@ -101,7 +102,7 @@ def get_single_tweet(card, lang="en"):
 
 
     try:
-        promoted = card.find_element_by_xpath('.//div[2]/div[2]/[last()]//span').text == "Promoted"
+        promoted = card.find_element(By.XPATH, './/div[2]/div[2]/[last()]//span').text == "Promoted"
     except:
         promoted = False
     if promoted:
@@ -109,7 +110,7 @@ def get_single_tweet(card, lang="en"):
 
     # get a string of all emojis contained in the tweet
     try:
-        emoji_tags = card.find_elements_by_xpath('.//img[contains(@src, "emoji")]')
+        emoji_tags = card.find_elements(By.XPATH, './/img[contains(@src, "emoji")]')
     except:
         return
     emoji_list = []
@@ -125,9 +126,9 @@ def get_single_tweet(card, lang="en"):
 
     # tweet url
     try:
-        element = card.find_element_by_xpath('.//a[contains(@href, "/status/")]')
+        element = card.find_element(By.XPATH, './/a[contains(@href, "/status/")]')
         tweet_url = element.get_attribute('href')
-        if langs_video[lang.lower()] in text or (len(image_links)==1 and "pu/img" in image_links[0]):
+        if langs_video[lang.lower()] in text or (len(image_links)==1 and "amplify_video_thumb" in image_links[0]):
             video_url = "https://twitter.com/i/status/"+tweet_url.split("/")[-1]
             image_links=[]
     except:
@@ -139,7 +140,7 @@ def get_single_tweet(card, lang="en"):
 def get_page_tweets(driver,account,data,writer,tweet_ids,logger,resume,page_info,history_count):
     
     meet_history=False
-    page_cards = driver.find_elements_by_xpath('//div[@data-testid="tweet"]')
+    page_cards = driver.find_elements(By.XPATH, '//div[@data-testid="cellInnerDiv"]')
     for card in page_cards:
         tweet = get_single_tweet(card)
         if tweet and ((page_info!="likes" and tweet[1]=='@'+account) or page_info=="likes"):

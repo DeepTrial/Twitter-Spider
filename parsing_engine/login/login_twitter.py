@@ -18,17 +18,29 @@ def login_pwd(driver,first=False):
     driver.get('https://www.twitter.com/login')
     # 输入账号密码
     sleep(15)
+    email = login_info.EMAIL
     username = login_info.USERNAME
     password = login_info.PASSWORD
     #print(username,password)
     driver.get('https://www.twitter.com/login')
-    username_xpath = '//input[@name="session[username_or_email]"]'
-    password_xpath = '//input[@name="session[password]"]'
-
+    email_xpath = '//*[@id="layers"]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div/div/div/div[5]/label/div/div[2]/div/input'
+    
+    # first input email
+    email_el = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, email_xpath)))
+    email_el.send_keys(email)
+    email_el.send_keys(Keys.RETURN)
+    sleep(10)
+    
+    # if need username
+    username_xpath = '//*[@id="layers"]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[1]/div/div[2]/label/div/div[2]/div/input'
     username_el = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, username_xpath)))
-    password_el = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, password_xpath)))
-
     username_el.send_keys(username)
+    username_el.send_keys(Keys.RETURN)
+    sleep(5)
+    
+    # finally password
+    password_xpath = '//*[@id="layers"]/div/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div[1]/div/div/div[3]/div/label/div/div[2]/div[1]/input'
+    password_el = WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, password_xpath)))
     password_el.send_keys(password)
     password_el.send_keys(Keys.RETURN)
     # 等待3秒
